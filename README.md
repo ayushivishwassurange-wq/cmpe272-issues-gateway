@@ -46,6 +46,7 @@ Stores the following webhook information:
 project/
 │
 ├── app/
+│   ├── services/
 │   ├── db.py
 │   ├── github_client.py
 │   ├── main.py
@@ -60,11 +61,17 @@ project/
 │       ├── test_validation_and_errors.py
 │       └── test_webhook_signature.py
 │
-├── openapi.yaml
-├── requirements.txt
-├── README.md
+├── .env
+├── .gitignore
+├── check_db.py
+├── Dockerfile
+├── events.db
+├── generate_openapi.py
 ├── Makefile
-└── Dockerfile
+├── openapi.yaml
+├── pytest.ini
+├── README.md
+└── requirements.txt
 ```
 
 ---
