@@ -5,7 +5,7 @@ import requests
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
-
+from fastapi import FastAPI, HTTPException, Response
 from app.github_client import BASE_URL, HEADERS
 from app.models import CreateIssueRequest, UpdateIssueRequest, CreateCommentRequest
 from app.db import SessionLocal, engine, Base, WebhookEvent
@@ -149,20 +149,28 @@ def github_test():
         "data": response.json()
     }
 
-
 @app.post("/issues", status_code=201)
-def create_issue(issue: CreateIssueRequest):
+def create_issue(
+    issue: CreateIssueRequest,
+    response: Response
+):
 
-    response = requests.post(
+    github_response = requests.post(
         f"{BASE_URL}/issues",
         headers=HEADERS,
         json=issue.model_dump()
     )
 
-    if response.status_code >= 400:
-        raise map_github_error(response)
+    if github_response.status_code >= 400:
+        raise map_github_error(github_response)
 
-    return response.json()
+    data = github_response.json()
+
+    response.headers["Location"] = (
+        f"/issues/{data['number']}"
+    )
+
+    return data
 
 @app.get("/issues")
 def get_issues(
@@ -284,6 +292,13 @@ async def webhook(request: Request):
 def get_webhooks():
 
     db = SessionLocal()
+
+    existing = db.query(WebhookEvent).filter(
+    WebhookEvent.delivery_id == delivery_id
+    ).first()
+    if existing:
+        db.close()
+        return
 
     events = db.query(WebhookEvent).all()
 
