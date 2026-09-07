@@ -46,10 +46,6 @@ Stores the following webhook information:
 project/
 │
 ├── app/
-│   ├── routes/
-│   │   ├── issues.py
-│   │   └── webhook.py
-│   │
 │   ├── db.py
 │   ├── github_client.py
 │   ├── main.py
