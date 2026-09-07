@@ -3,6 +3,26 @@
 A FastAPI-based gateway service for managing GitHub Issues through a REST API. The application integrates with the GitHub Issues API, supports issue management operations, receives GitHub webhooks, verifies webhook signatures, and stores webhook events in a SQLite database.
 
 ---
+## Architecture Diagram
+
+```mermaid
+flowchart LR
+
+    A[Client / Swagger UI] --> B[FastAPI Gateway]
+
+    B --> C[GitHub Issues API]
+    C --> B
+
+    C -->|Webhook Events| D[/webhook Endpoint]
+
+    D --> E[Webhook Signature Verification]
+
+    E --> F[(SQLite Database)]
+
+    B --> G[/issues]
+    B --> H[/issues/{number}]
+    B --> I[/issues/{number}/comments]
+```
 
 ## Features
 
